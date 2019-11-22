@@ -167,8 +167,12 @@ namespace Rg.Plugins.Popup.Droid.Renderers
             }
             if (e.Action != MotionEventActions.Up)
                 return base.DispatchTouchEvent(e);
+
+            if (_disposed)
+                return false;
+
             View currentFocus1 = ((Activity)Context).CurrentFocus;
-            bool flag = base.DispatchTouchEvent(e);
+
             if (currentFocus1 is EditText)
             {
                 View currentFocus2 = ((Activity)Context).CurrentFocus;
@@ -181,11 +185,16 @@ namespace Rg.Plugins.Popup.Droid.Renderers
                     if (!new Rectangle(currentFocus1.Left, currentFocus1.Top, currentFocus1.Width, currentFocus1.Height).Contains(num1, num2))
                     {
                         Context.HideKeyboard(currentFocus1);
-                        RequestFocus();
                         currentFocus1.ClearFocus();
                     }
                 }
             }
+
+            if (_disposed)
+                return false;
+
+            var flag = base.DispatchTouchEvent(e);
+
             return flag;
         }
 
